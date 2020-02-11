@@ -5,7 +5,6 @@
 
 
 library(rvest)
-library(dplyr)
 
 # PetScan engine to search for articles in wikipedia
 # using the query https://petscan.wmflabs.org/?psid=15433482
@@ -28,7 +27,7 @@ get_influences<-function(foo, filename){
   id<-boxes %>%
     html_node("div.NavHead") %>% xml_text() == "Influences"
   # True False NA vector indicating the influences
-  if(!any(id)){
+  if(!any(na.exclude(id))){
     message("No influences documented, skipping: ",foo)
     return(NA)
   }
@@ -50,4 +49,5 @@ get_influences<-function(foo, filename){
 }
 
 out<-lapply(phi_list,get_influences, filename="influences.txt")
+# Network generated on Tue Feb 11 16:18:27 2020
 
