@@ -51,3 +51,25 @@ get_influences<-function(foo, filename){
 out<-lapply(phi_list,get_influences, filename="influences.txt")
 # Network generated on Tue Feb 11 16:18:27 2020
 
+# Generate a network from the edges list
+library(igraph)
+library(ggraph)
+
+# Read the fetch edge table
+inf_list<-as.matrix(read.table("influences.txt", stringsAsFactors = F))
+# Manual check indicated that referecences to Árpád_Szabó did not existed 
+#  as Wikipedia articles so spurious links were fetched and are therefore 
+#  manually edited with the following commands
+inf_list[grep("Árpád_Szabó",inf_list[,2]),2]<-"Árpád_Szabó"
+# Invert columns order so that left to right follows the direction of knowledge
+inf_list<-inf_list[,c(2,1)]
+
+# Graph creation
+(g<-graph_from_edgelist(inf_list, directed = T))
+
+# Get the 5 best influencers
+degree(g,mode = "out") %>% sort(decreasing = T) %>% .[1:5]
+# Immanuel_Kant           Aristotle Ludwig_Wittgenstein               Plato 
+# 24                  20                  20                  16 
+# David_Hume 
+# 12 
