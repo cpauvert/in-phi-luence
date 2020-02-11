@@ -37,11 +37,10 @@ get_influences<-function(foo, filename){
   influences<-boxes %>% html_nodes("ul.NavContent") %>% # Get the boxes that contains a list  
     `[[`(which(na.exclude(id))) %>% # Extract the Influences
     html_nodes("a") %>% # Find the links
-    html_text()
-  # Remove potential references links
-  influences<-influences[!grepl("\\[",influences)]
-  # Homogeneize with foo by adding underscore
-  influences<-gsub(" ","_",influences)
+    html_attr("href") %>% # Extract the links instead of the text!
+    .[!grepl("#",.)] %>%  # Remove potential references links
+    gsub("/wiki/","",.) %>% # Remove the url prefix
+    sapply(.,URLdecode,USE.NAMES = F) # Decode special characters %C3%A9 -> é
   # Append the Influences into a file
   write.table(
     cbind(foo,influences),file = filename,row.names = F,col.names = F,append = T
@@ -50,5 +49,5 @@ get_influences<-function(foo, filename){
   return(1)
 }
 
-out<-lapply(phi_list[1:10],get_influences, filename="influences.txt")
+out<-lapply(phi_list,get_influences, filename="influences.txt")
 
