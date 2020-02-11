@@ -73,3 +73,16 @@ degree(g,mode = "out") %>% sort(decreasing = T) %>% .[1:5]
 # 24                  20                  20                  16 
 # David_Hume 
 # 12 
+
+# Visualisation with ggraph
+ggraph(g, layout = "igraph",algorithm="fr") +
+  geom_edge_link(arrow = arrow(length = unit(2, 'mm')), 
+                 end_cap = circle(1, 'mm')) + 
+  geom_node_point() +
+  geom_node_point(data = function(x){x[x$name=="Ludwig_Wittgenstein",]},color="orange") +
+  coord_fixed() + theme_graph()
+
+# Interactive visualisation
+library(visNetwork)
+visIgraph(g) %>%
+  visOptions(highlightNearest = T)
