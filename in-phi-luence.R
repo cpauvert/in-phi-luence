@@ -37,8 +37,8 @@ get_influences<-function(foo, filename){
     `[[`(which(na.exclude(id))) %>% # Extract the Influences
     html_nodes("a") %>% # Find the links
     html_attr("href") %>% # Extract the links instead of the text!
-    .[!grepl("#",.)] %>%  # Remove potential references links
-    gsub("/wiki/","",.) %>% # Remove the url prefix
+    .[!grepl("#|CITESHORT|redlink",.)] %>%  # Remove potential references links, missing refs or inexistant pages
+    gsub(".*/wiki/","",.) %>% # Remove the url prefix totally
     sapply(.,URLdecode,USE.NAMES = F) # Decode special characters %C3%A9 -> é
   # Append the Influences into a file
   write.table(
