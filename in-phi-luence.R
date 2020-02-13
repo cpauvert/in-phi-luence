@@ -42,7 +42,7 @@ get_influences<-function(foo, filename){
     sapply(.,URLdecode,USE.NAMES = F) # Decode special characters %C3%A9 -> é
   # Append the Influences into a file
   write.table(
-    cbind(foo,influences),file = filename,row.names = F,col.names = F,append = T
+    cbind(influences,foo),file = filename,row.names = F,col.names = F,append = T
     )
   system("sleep 1")
   return(1)
@@ -61,8 +61,6 @@ inf_list<-as.matrix(read.table("influences.txt", stringsAsFactors = F))
 #  as Wikipedia articles so spurious links were fetched and are therefore 
 #  manually edited with the following commands
 inf_list[grep("Árpád_Szabó",inf_list[,2]),2]<-"Árpád_Szabó"
-# Invert columns order so that left to right follows the direction of knowledge
-inf_list<-inf_list[,c(2,1)]
 
 # Graph creation
 (g<-graph_from_edgelist(inf_list, directed = T))
