@@ -84,5 +84,14 @@ ggraph(g, layout = "igraph",algorithm="fr") +
 
 # Interactive visualisation
 library(visNetwork)
-visIgraph(g) %>%
+library(dplyr)
+
+vis_data<-toVisNetworkData(g)
+vis_data$nodes <- vis_data$nodes %>% mutate(
+  title = paste0("<a href='https://en.wikipedia.org/wiki/",label,
+                 "'><b>",gsub("_"," ",label),"</b></a>"))
+
+visNetwork(vis_data$nodes, vis_data$edges) %>%
+  visEdges(arrows = "to") %>% # Add directionality
+  visIgraphLayout() %>%
   visOptions(highlightNearest = T)
