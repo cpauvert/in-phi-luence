@@ -53,11 +53,25 @@ out<-lapply(phi_list,get_influences, filename="influences.txt")
 
 # Generate a network from the edges list
 library(igraph)
-library(ggraph)
 
 # Read the fetch edge table
 inf_list<-as.matrix(read.table("influences.txt", stringsAsFactors = F))
 
+# Duplicates entry are still present, e.g. 
+# Georg Wilhelm Friedrich Hegel
+# Georg_Hegel
+# G._W._F._Hegel
+# and that needs to be homogeneized.
+# Perform a request for each article, save the article title 
+#   and create a named list to convert back synonyms to proper nomenclature
+synonyms<-sapply( inf_list %>% c() %>% unique(),# From the unique names
+                  function(foo){
+                    paste0("https://en.wikipedia.org/wiki/",foo) %>%
+                      read_html() %>%
+                      html_node("h1") %>% html_text() %>% gsub(" ","_", .)
+                  })
+# Convert names to erase duplicates
+inf_list<-apply(inf_list, 1:2,function(foo) synonyms[foo])
 # Graph creation
 (g<-graph_from_edgelist(inf_list, directed = T))
 
@@ -69,6 +83,7 @@ degree(g,mode = "out") %>% sort(decreasing = T) %>% .[1:5]
 # 12 
 
 # Visualisation with ggraph
+library(ggraph)
 ggraph(g, layout = "igraph",algorithm="fr") +
   geom_edge_link(arrow = arrow(length = unit(2, 'mm')), 
                  end_cap = circle(1, 'mm')) + 
