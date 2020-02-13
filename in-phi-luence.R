@@ -95,3 +95,6 @@ visNetwork(vis_data$nodes, vis_data$edges) %>%
   visEdges(arrows = "to") %>% # Add directionality
   visIgraphLayout() %>%
   visOptions(highlightNearest = T)
+
+# Visualise only the philosophers listed
+g %>% delete.vertices(V(g)$name %>% .[!. %in% phi_list]) %>% visIgraph()
