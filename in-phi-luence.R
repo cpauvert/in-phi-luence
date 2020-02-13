@@ -57,10 +57,6 @@ library(ggraph)
 
 # Read the fetch edge table
 inf_list<-as.matrix(read.table("influences.txt", stringsAsFactors = F))
-# Manual check indicated that referecences to Árpád_Szabó did not existed 
-#  as Wikipedia articles so spurious links were fetched and are therefore 
-#  manually edited with the following commands
-inf_list[grep("Árpád_Szabó",inf_list[,2]),2]<-"Árpád_Szabó"
 
 # Graph creation
 (g<-graph_from_edgelist(inf_list, directed = T))
