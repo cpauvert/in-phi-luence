@@ -42,23 +42,51 @@ server <- function(input, output,session) {
 
 # Define UI for the visualisation
 ui <- fluidPage(
-  
   # Application title
-  titlePanel("Influences of Philosophers of science"),
-  
+  titlePanel("In-phi-luence: a network view of philosophers"),
   # Sidebar with node search enabled
   sidebarLayout(
     sidebarPanel(
+      h4("What is it?"),
+      p("Philosophers of science are here represented as",em("nodes"),"of the network.",
+        "The",em("links"), "between nodes indicates the", strong("influences"),"one philosopher had",
+        "on another one. The direction of the link follows knowledge flow."),
+      helpText(strong("Example:"),"Aristotle was influenced by Plato"),
+      br(),hr(),
       selectInput(inputId = "selnode",
-                  label = "Search Philosophers",
+                  label = "Find Philosophers in the network",
                   choices = "",
                   multiple = FALSE),
     actionButton("focus", "Focus"),
-    actionButton("reset", "Reset view")),
+    actionButton("reset", "Reset view"),
+    br(),
+    helpText("Note: Select a philosopher and click on focus",
+             "to highlight its influences. ",
+             "Use 'Reset' to get back to the full network view.")),
     # Show the network
     mainPanel(
       visNetworkOutput("network",height = "500px", width = "auto")
-    )
+    )),
+    fluidRow(
+      column(4, h4("How?"),
+             p("Wikipedia articles were first fetched if they had a Philosopher Infobox",
+               "and if they belong to the category of Philosophy of science.",
+               "Mentions of influences in the infobox were mined, collected and gathered into a network."),
+             p("The code to fetch and clean data is available at",
+               a("https://github.com/cpauvert/in-phi-luence"),". ")),
+    column(4,
+           h4("Why?"),
+           p("This app allows to visualise knowledge flow as a whole.",
+             "It is also a way to promote the content of Wikipedia articles which are accessible",
+             "once hovering on the nodes."),
+           p("Scholars and students in philosophy could explore the network",
+             "and even spot missing links that should be indicated in Wikipedia articles.")),
+    column(4 ,h4("What's next?"),p("New features could include:"),
+           tags$ul(
+             tags$li("Expand the search to all philosophers"),
+             tags$li("Intersect the network with one built from articles in different languages"),
+             tags$li("Restrict the visualisation to philosophers only, not influences like novelists")
+           ))
   )
 )
 
