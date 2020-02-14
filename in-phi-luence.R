@@ -44,7 +44,7 @@ get_influences<-function(foo, filename){
   write.table(
     cbind(influences,foo),file = filename,row.names = F,col.names = F,append = T
     )
-  system("sleep 1")
+  system("sleep .7")
   return(1)
 }
 
