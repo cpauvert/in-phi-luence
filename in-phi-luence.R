@@ -81,6 +81,9 @@ inf_list<-apply(inf_list, 1:2,function(foo) synonyms[foo])
 # Add the "inlist" attribute
 V(g)$inlist<-V(g)$name %in% phi_list
 
+# Export the graph to GraphML for future visualisation
+write_graph(g, "influences.graphml", format = "graphml")
+
 # Get the 5 best influencers
 degree(g,mode = "out") %>% sort(decreasing = T) %>% .[1:5]
 # Immanuel_Kant           Aristotle Ludwig_Wittgenstein               Plato 
