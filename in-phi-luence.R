@@ -77,6 +77,10 @@ inf_list<-apply(inf_list, 1:2,function(foo) synonyms[foo])
 # Graph creation
 (g<-graph_from_edgelist(inf_list, directed = T))
 
+
+# Add the "inlist" attribute
+V(g)$inlist<-V(g)$name %in% phi_list
+
 # Get the 5 best influencers
 degree(g,mode = "out") %>% sort(decreasing = T) %>% .[1:5]
 # Immanuel_Kant           Aristotle Ludwig_Wittgenstein               Plato 
