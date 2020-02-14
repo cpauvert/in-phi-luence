@@ -16,7 +16,14 @@ server <- function(input, output,session) {
     vis_data
   })
    output$network <- renderVisNetwork({
-     visNetwork(data()$nodes, data()$edges) %>%
+     visNetwork(data()$nodes, data()$edges,
+                main = list(
+                  text=paste(nrow(data()$nodes),"philosophers and",nrow(data()$edges),"links"),
+                  style="font-family:Helvetica,Arial,sans-serif;font-size=14px;text-align:center"),
+                footer = list(
+                  text=paste("Network generated on",file.info("influences.txt")$ctime),
+                  style="font-family:Helvetica,Arial,sans-serif;font-size=8px;text-align:right")
+                ) %>%
        visEdges(arrows = "to") %>% # Add directionality
        visIgraphLayout() %>%
        visOptions(highlightNearest = T)
@@ -67,13 +74,14 @@ ui <- fluidPage(
     mainPanel(
       visNetworkOutput("network",height = "500px", width = "auto")
     )),
+  br(),
     fluidRow(
       column(4, h4("How?"),
              p("Wikipedia articles were first fetched if they had a Philosopher Infobox",
                "and if they belong to the category of Philosophy of science.",
                "Mentions of influences in the infobox were mined, collected and gathered into a network."),
              p("The code to fetch and clean data is available at",
-               a("https://github.com/cpauvert/in-phi-luence"),". ")),
+               a("https://github.com/cpauvert/in-phi-luence"))),
     column(4,
            h4("Why?"),
            p("This app allows to visualise knowledge flow as a whole.",
