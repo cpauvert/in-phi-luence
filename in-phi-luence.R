@@ -66,9 +66,11 @@ inf_list<-as.matrix(read.table("influences.txt", stringsAsFactors = F))
 #   and create a named list to convert back synonyms to proper nomenclature
 synonyms<-sapply( inf_list %>% c() %>% unique(),# From the unique names
                   function(foo){
-                    paste0("https://en.wikipedia.org/wiki/",foo) %>%
+                    tryCatch(
+                      paste0("https://en.wikipedia.org/wiki/",foo) %>%
                       read_html() %>%
-                      html_node("h1") %>% html_text() %>% gsub(" ","_", .)
+                      html_node("h1") %>% html_text() %>% gsub(" ","_", .),
+                      error = function(e){foo})
                   })
 # Convert names to erase duplicates
 inf_list<-apply(inf_list, 1:2,function(foo) synonyms[foo])
