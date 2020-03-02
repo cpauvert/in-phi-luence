@@ -21,7 +21,7 @@ server <- function(input, output,session) {
                   text=paste(nrow(data()$nodes),"philosophers and",nrow(data()$edges),"links"),
                   style="font-family:Helvetica,Arial,sans-serif;font-size=14px;text-align:center"),
                 footer = list(
-                  text=paste("Network generated on",file.info("influences.txt")$ctime),
+                  text="Network generated on 2020-02-14.",
                   style="font-family:Helvetica,Arial,sans-serif;font-size=8px;text-align:right")
                 ) %>%
        visEdges(arrows = "to") %>% # Add directionality
@@ -81,7 +81,7 @@ ui <- fluidPage(
                "and if they belong to the category of Philosophy of science.",
                "Mentions of influences in the infobox were mined, collected and gathered into a network."),
              p("The code to fetch and clean data is available at",
-               a("https://github.com/cpauvert/in-phi-luence"))),
+               a(href="https://github.com/cpauvert/in-phi-luence","https://github.com/cpauvert/in-phi-luence"))),
     column(4,
            h4("Why?"),
            p("This app allows to visualise knowledge flow as a whole.",
