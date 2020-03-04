@@ -94,7 +94,8 @@ ui <- fluidPage(
              tags$li("Expand the search to all philosophers"),
              tags$li("Intersect the network with one built from articles in different languages"),
              tags$li("Restrict the visualisation to philosophers only, not influences like novelists")
-           ))
+           ),p("Suggestions and remarks are welcomed (en/fr)",
+           a(href="https://github.com/cpauvert/in-phi-luence/issues","here.")))
   )
 )
 
