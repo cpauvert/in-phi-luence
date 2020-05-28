@@ -17,9 +17,4 @@ Scholars and students in philosophy could explore the network and even spot miss
 
 # Future avenues and suggestions
 
-- [] Improve the visualisation (inward/outward links; list of influencers etc.)
-- [] Improve the search in the list of philosophers to reduce the app load
-- [] Expand the search to all philosophers
-- [] Intersect the network with one built from articles in different languages
-- [] Restrict the visualisation to philosophers only, not influences like novelists
-- [] Add this list to proper issues in Github
+Suggestions are welcomed in the issues section where some of them are already listed.
