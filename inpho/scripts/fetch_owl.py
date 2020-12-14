@@ -26,7 +26,7 @@ if not os.path.exists(snakemake.output[0]):
     os.mkdir(snakemake.output[0])
 
 # Download the OWL file if not already present
-for owl in owls[-5:]:
+for owl in owls:
     # Get into a list 
     # 1. the output directory and
     # 2. the OWL filename (~basename like function)
