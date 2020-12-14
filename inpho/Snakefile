@@ -1,0 +1,12 @@
+
+rule fetch_owl_files:
+# Scrape the InPho website to fetch the necessary OWL files
+    output:
+        directory("owls")
+    conda:
+        "envs/fetch_owl.yaml"
+    script:
+        "scripts/fetch_owl.py"
+
+
+

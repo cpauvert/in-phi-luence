@@ -1,0 +1,5 @@
+channels:
+  - conda-forge
+dependencies:
+  - requests == 2.25
+  - bs4 == 4.9
