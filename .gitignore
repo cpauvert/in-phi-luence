@@ -6,3 +6,4 @@ inpho/.snakemake
 inpho/owls
 inpho/inpho.owl
 inpho/inpho.tsv
+inpho/inpho.html

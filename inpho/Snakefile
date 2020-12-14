@@ -34,4 +34,12 @@ rule get_influence_network:
     script:
         "scripts/get_influence_network.py"
 
-
+rule visualise_network:
+    input:
+        "inpho.tsv"
+    output:
+        "inpho.html"
+    conda:
+        "envs/network.yaml"
+    script:
+        "scripts/visualise_network.R"
