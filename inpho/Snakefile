@@ -1,5 +1,5 @@
 
-rule fetch_owl_files:
+checkpoint fetch_owl_files:
 # Scrape the InPho website to fetch the necessary OWL files
     output:
         directory("owls")
@@ -7,6 +7,22 @@ rule fetch_owl_files:
         "envs/fetch_owl.yaml"
     script:
         "scripts/fetch_owl.py"
+
+def aggregate_input(wildcards):
+    checkpoint_output = checkpoints.fetch_owl_files.get(**wildcards).output[0]
+    return expand("owls/{i}.owl",
+           i=glob_wildcards(os.path.join(checkpoint_output, "{i}.owl")).i)
+
+rule aggregate_owl_files:
+# Combine OWL files into one
+    input:
+        aggregate_input
+    output:
+        "inpho.owl"
+    conda:
+        "envs/owlready2.yaml"
+    script:
+        "scripts/aggregate_owl.py"
 
 
 

@@ -1,0 +1,4 @@
+channels:
+  - conda-forge
+dependencies:
+  - owlready2 == 0.25
