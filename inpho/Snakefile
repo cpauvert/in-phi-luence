@@ -24,5 +24,14 @@ rule aggregate_owl_files:
     script:
         "scripts/aggregate_owl.py"
 
+rule get_influence_network:
+    input:
+        "inpho.owl"
+    output:
+        "inpho.tsv"
+    conda:
+        "envs/owlready2.yaml"
+    script:
+        "scripts/get_influence_network.py"
 
 
