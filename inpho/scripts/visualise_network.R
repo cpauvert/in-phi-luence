@@ -4,7 +4,12 @@
 library(igraph)
 library(visNetwork)
 
-g <- graph_from_data_frame(read.delim(snakemake@input[[1]], header=F))
+# Read the gathered influences
+net <- as.matrix(read.delim(snakemake@input[[1]], header=F))
+# Trim whitespaces in name and decode percent-encoding characters
+net <- apply(trimws(net), 1:2, URLdecode)
+# Built network
+g <- graph_from_data_frame(net)
 data <- toVisNetworkData(g, idToLabel=F)
 data$nodes$title <- paste0("<p>", data$nodes$id, "</p>")
 
