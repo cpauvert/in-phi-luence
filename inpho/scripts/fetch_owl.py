@@ -33,8 +33,13 @@ for owl in owls:
     owl_path=os.path.join(snakemake.output[0], owl.split("/")[-1])
     if not os.path.exists(owl_path):
         html=get(urls[0] + owl)
-        with open(owl_path, "wb") as dwl:
-            dwl.write(html.content)
+        # Check for faulty OWL files and skip them
+        if "corrupted" in html.text:
+            print("Skipped corrupted ", owl)
+            continue
+        else:
+            with open(owl_path, "w", encoding = 'utf8') as dwl:
+                dwl.write(html.text)
     else:
         continue
 

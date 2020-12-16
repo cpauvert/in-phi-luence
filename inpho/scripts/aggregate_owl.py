@@ -15,8 +15,12 @@ onto = get_ontology(first_owl).load()
 
 # Update the initial OWL object with the others
 for update in owls:
-    owl_update = get_ontology(update).load()
-    onto.imported_ontologies.append(owl_update)
+    try:
+        owl_update = get_ontology(update).load()
+        onto.imported_ontologies.append(owl_update)
+    except:
+        print("Skipped ", update)
+        continue
 
 # Write the aggregated file
 onto.save(snakemake.output[0], format = "rdfxml")
