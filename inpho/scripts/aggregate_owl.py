@@ -4,8 +4,9 @@
 from owlready2 import *
 
 # Fetch the list of OWL files
-owls = snakemake.input # Necessary copy to avoid AttributeError from Snakemake
+owls = list(snakemake.input) # Necessary copy to avoid AttributeError from Snakemake
 # Extract the very first OWL from the list to initiate the object
+owls.sort()
 owls.reverse()
 first_owl = owls.pop()
 owls.reverse()
@@ -23,4 +24,4 @@ for update in owls:
         continue
 
 # Write the aggregated file
-onto.save(snakemake.output[0], format = "rdfxml")
+onto.save(snakemake.output[0])
