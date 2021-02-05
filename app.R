@@ -24,9 +24,10 @@ server <- function(input, output,session) {
                   text="Network generated on 2020-02-14.",
                   style="font-family:Helvetica,Arial,sans-serif;font-size=8px;text-align:right")
                 ) %>%
-       visEdges(arrows = "to") %>% # Add directionality
+       visNodes(shape = "diamond", color = list(background = "darkgray", border = "white", highlight = "black"), borderWidth = 2) %>%
+       visEdges(arrows = list(to = list(enabled = TRUE, scaleFactor = 0.5)), color = "darkgray", width = 2) %>%
        visIgraphLayout() %>%
-       visOptions(highlightNearest = T)
+       visOptions(highlightNearest = list(enabled = T, degree = 1, hover = T))
    })
    
    observe({
