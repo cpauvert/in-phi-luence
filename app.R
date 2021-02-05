@@ -45,6 +45,19 @@ server <- function(input, output,session) {
        visFit() %>%
        visUnselectAll()
    })
+   inph_list<-isolate({
+     g<-read_graph("influences.graphml", format = "graphml")
+     foo<-list("from"=as_adj_list(g, mode = "in"),
+          "to"=as_adj_list(g, mode = "out"))
+     lapply(foo, function(dir) lapply(dir, function(x) x %>% as_ids() %>% sort()))
+   })
+   output$influencers<-renderTable(
+     data.frame("Influencers"=inph_list[["from"]][[input$selnode]]),
+     striped = TRUE, hover = TRUE, align = "c")
+   output$influencees<-renderTable(
+     data.frame("Influencees"=inph_list[["to"]][[input$selnode]]),
+     striped = TRUE, hover = TRUE, align = "c")
+   output$philosopher<-renderText(input$selnode)
 }
 
 # Define UI for the visualisation
@@ -72,7 +85,15 @@ ui <- fluidPage(
              "Use 'Reset' to get back to the full network view.")),
     # Show the network
     mainPanel(
-      visNetworkOutput("network",height = "500px", width = "auto")
+      tabsetPanel(type = "tabs",
+                  tabPanel("Network",
+                           visNetworkOutput("network",height = "500px", width = "auto")
+                           ),
+                  tabPanel("Details", fluidRow(
+                    h3(textOutput("philosopher")),
+                    column(3, tableOutput("influencers")),
+                    column(3, tableOutput("influencees"))
+                  ))),
     )),
   br(),
     fluidRow(
