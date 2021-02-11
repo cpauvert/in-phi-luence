@@ -39,15 +39,13 @@ server <- function(input, output,session) {
                        choices = sort(data()$nodes$id))
    })
    
-   observeEvent(input$focus,{
+   observeEvent(input$show,{
      visNetworkProxy("network") %>%
-       visFocus(id = input$selnode) %>%
        visSelectNodes(id = input$selnode)
    })
    
-   observeEvent(input$reset,{
+   observeEvent(input$unselect,{
      visNetworkProxy("network") %>%
-       visFit() %>%
        visUnselectAll()
    })
    inph_list<-isolate({
@@ -91,12 +89,11 @@ ui <- navbarPage(
                   label = "Find Philosophers in the network",
                   choices = "",
                   multiple = FALSE),
-    actionButton("focus", "Focus"),
-    actionButton("reset", "Reset view"),
+    actionButton("show", "Show"),
+    actionButton("unselect", "Unselect"),
     br(),
-    helpText("Note: Select a philosopher and click on focus",
-             "to highlight its influences. ",
-             "Use 'Reset' to get back to the full network view.")),
+    helpText("Note: Search for a philosopher and click on Show",
+             "to highlight its position in the network.")),
     # Show the network
     mainPanel(
       tabsetPanel(type = "tabs",
