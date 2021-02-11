@@ -24,9 +24,6 @@ server <- function(input, output,session) {
   })
    output$network <- renderVisNetwork({
      visNetwork(data()$nodes, data()$edges,
-                main = list(
-                  text=paste(nrow(data()$nodes),"philosophers and",nrow(data()$edges),"links"),
-                  style="font-family:Helvetica,Arial,sans-serif;font-size=14px;text-align:center"),
                 footer = list(
                   text="Network generated on 2020-02-14.",
                   style="font-family:Helvetica,Arial,sans-serif;font-size=8px;text-align:right")
@@ -67,17 +64,22 @@ server <- function(input, output,session) {
      lapply(inph_list[["to"]][[input$selnode]], function(x) tags$li(x))
    )
    output$philosopher<-renderText(input$selnode)
+   output$title<-renderText(
+     paste(nrow(data()$nodes), "philosophers and",
+           nrow(data()$edges), "influences links")
+   )
 }
 
 # Define UI for the visualisation
-ui <- fluidPage(
+ui <- navbarPage(
   # Application title
-  titlePanel("In-phi-luence: a network view of philosophers"),
+  "In-phi-luence",
+  tabPanel("Networks",
   # Sidebar with node search enabled
   sidebarLayout(
     sidebarPanel(
-      h4("What is it?"),
-      p("Philosophers of science are here represented as",em("nodes"),"of the network.",
+      h4("A network view of philosophers"),
+      p("Philosophers are here represented as",em("nodes"),"of the network.",
         "The",em("links"), "between nodes indicates the", strong("influences"),"one philosopher had",
         "on another one. The direction of the link follows knowledge flow."),
       helpText(strong("Example:"),"Aristotle was influenced by Plato"),
@@ -99,6 +101,7 @@ ui <- fluidPage(
     mainPanel(
       tabsetPanel(type = "tabs",
                   tabPanel("Network",
+                           h4(textOutput("title")),
                            visNetworkOutput("network",height = "500px", width = "auto")
                            ),
                   tabPanel("Details",
@@ -106,8 +109,8 @@ ui <- fluidPage(
                            strong("was influenced by:"), tags$ul(uiOutput("influencers")),
                            strong("has influenced:"), tags$ul(uiOutput("influencees"))
                   ))
-    )),
-  br(),
+    ))),
+  tabPanel("Details",
     fluidRow(
       column(4, h4("How?"),
              p("Wikipedia articles were first fetched if they had a Philosopher Infobox",
@@ -129,7 +132,7 @@ ui <- fluidPage(
              tags$li("Restrict the visualisation to philosophers only, not influences like novelists")
            ),p("Suggestions and remarks are welcomed (en/fr)",
            a(href="https://github.com/cpauvert/in-phi-luence/issues","here.")))
-  )
+  ))
 )
 
 
