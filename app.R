@@ -7,11 +7,18 @@ library(visNetwork)
 server <- function(input, output,session) {
    
   data<-reactive({
+    # Data sources dependent input file
+    g_src<-switch (input$data_src,
+            "wk" = "influences.graphml",
+            "inpho" = "inpho/inpho.graphml")
+    link_src<-switch (input$data_src,
+                      "wk" = "https://en.wikipedia.org/wiki/",
+                      "inpho" = "https://www.inphoproject.org/entity?redirect=true&q=")
     # Read the network object
-    g<-read_graph("influences.graphml", format = "graphml")
+    g<-read_graph(g_src, format = "graphml")
     vis_data<-toVisNetworkData(g)
     vis_data$nodes <- vis_data$nodes %>% mutate(
-      title = paste0("<a target='_blank' href='https://en.wikipedia.org/wiki/",label,
+      title = paste0("<a target='_blank' href='",link_src, label,
                      "'><b>",gsub("_"," ",label),"</b></a>"))
     vis_data
   })
@@ -74,7 +81,10 @@ ui <- fluidPage(
         "The",em("links"), "between nodes indicates the", strong("influences"),"one philosopher had",
         "on another one. The direction of the link follows knowledge flow."),
       helpText(strong("Example:"),"Aristotle was influenced by Plato"),
-      br(),hr(),
+      hr(),
+      radioButtons("data_src", "Select a source for the influences data",
+                   choices = c("The Free Encyclopedia Wikipedia (en)" = "wk",
+                               "The Internet Philosophy Ontology Project" = "inpho")),
       selectInput(inputId = "selnode",
                   label = "Find Philosophers in the network",
                   choices = "",
