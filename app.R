@@ -5,18 +5,19 @@ library(visNetwork)
 
 # Define server side required to visualise the network
 server <- function(input, output,session) {
-   
-  data<-reactive({
+  net<-reactive({
     # Data sources dependent input file
     g_src<-switch (input$data_src,
             "wk" = "influences.graphml",
             "inpho" = "inpho/inpho.graphml")
+    # Read the network object
+    read_graph(g_src, format = "graphml")
+  })
+  data<-reactive({
     link_src<-switch (input$data_src,
                       "wk" = "https://en.wikipedia.org/wiki/",
                       "inpho" = "https://www.inphoproject.org/entity?redirect=true&q=")
-    # Read the network object
-    g<-read_graph(g_src, format = "graphml")
-    vis_data<-toVisNetworkData(g)
+    vis_data<-toVisNetworkData(net())
     vis_data$nodes <- vis_data$nodes %>% mutate(
       title = paste0("<a target='_blank' href='",link_src, label,
                      "'><b>",gsub("_"," ",label),"</b></a>"))
@@ -48,18 +49,17 @@ server <- function(input, output,session) {
      visNetworkProxy("network") %>%
        visUnselectAll()
    })
-   inph_list<-isolate({
-     g<-read_graph("influences.graphml", format = "graphml")
-     foo<-list("from"=as_adj_list(g, mode = "in"),
-          "to"=as_adj_list(g, mode = "out"))
-     lapply(foo, function(dir) lapply(dir, function(x) x %>% as_ids() %>% sort()))
+   inph_list<-reactive({
+     adj_lists<-list("from"=as_adj_list(net(), mode = "in"),
+          "to"=as_adj_list(net(), mode = "out"))
+     lapply(adj_lists, function(dir) lapply(dir, function(x) x %>% as_ids() %>% sort()))
    })
    # Lists solution from https://stackoverflow.com/a/50414101
    output$influencers<-renderUI(
-     lapply(inph_list[["from"]][[input$selnode]], function(x) tags$li(x))
+     lapply(inph_list()[["from"]][[input$selnode]], function(x) tags$li(x))
    )
    output$influencees<-renderUI(
-     lapply(inph_list[["to"]][[input$selnode]], function(x) tags$li(x))
+     lapply(inph_list()[["to"]][[input$selnode]], function(x) tags$li(x))
    )
    output$philosopher<-renderText(input$selnode)
    output$title<-renderText(
