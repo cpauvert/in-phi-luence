@@ -37,7 +37,9 @@ server <- function(input, output,session) {
    
    observe({
      updateSelectInput(session, "selnode",
-                       choices = sort(data()$nodes$id))
+                       choices = data()$nodes$id %>%
+                         sort() %>%
+                         gsub("_", " ",.))
    })
    
    observeEvent(input$show,{
@@ -51,8 +53,11 @@ server <- function(input, output,session) {
    })
    inph_list<-reactive({
      adj_lists<-list("from"=as_adj_list(net(), mode = "in"),
-          "to"=as_adj_list(net(), mode = "out"))
-     lapply(adj_lists, function(dir) lapply(dir, function(x) x %>% as_ids() %>% sort()))
+                     "to"=as_adj_list(net(), mode = "out"))
+     lapply(adj_lists, function(dir) lapply(dir, function(x){
+       x %>% as_ids() %>%
+         sort() %>% gsub("_", " ",.)})
+     )
    })
    # Lists solution from https://stackoverflow.com/a/50414101
    output$influencers<-renderUI(
@@ -61,7 +66,7 @@ server <- function(input, output,session) {
    output$influencees<-renderUI(
      lapply(inph_list()[["to"]][[input$selnode]], function(x) tags$li(x))
    )
-   output$philosopher<-renderText(input$selnode)
+   output$philosopher<-renderText(input$selnode %>% gsub("_", " ",.))
    output$title<-renderText(
      paste(nrow(data()$nodes), "philosophers and",
            nrow(data()$edges), "influences links")
