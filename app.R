@@ -68,21 +68,25 @@ server <- function(input, output,session) {
        visUnselectAll()
    })
    inph_list<-reactive({
-     adj_lists<-list("from"=as_adj_list(net(), mode = "in"),
-                     "to"=as_adj_list(net(), mode = "out"))
-     lapply(adj_lists, function(dir) lapply(dir, function(x){
-       x %>% as_ids() %>%
-         sort() %>% gsub("_", " ",.)})
+     adj_lists<-list(
+       "influencers" = E(net())[to(gsub(" ", "_", input$selnode))] %>% # Get the influencers
+         tail_of(net(), .), # hence the tail of the arrow
+       "influencees" = E(net())[from(gsub(" ", "_", input$selnode))] %>% # Get the influencees
+         head_of(net(), .) # hence the head of the arrow
      )
+     lapply(adj_lists, function(x){
+       x %>% as_ids() %>%
+         sort() %>% gsub("_", " ",.)}
+       )
    })
    # Lists solution from https://stackoverflow.com/a/50414101
    output$influencers<-renderUI(
-     lapply(inph_list()[["from"]][[input$selnode]], function(x) tags$li(x))
+     lapply(inph_list()[["influencers"]], function(x) tags$li(x))
    )
    output$influencees<-renderUI(
-     lapply(inph_list()[["to"]][[input$selnode]], function(x) tags$li(x))
+     lapply(inph_list()[["influencees"]], function(x) tags$li(x))
    )
-   output$philosopher<-renderText(input$selnode %>% gsub("_", " ",.))
+   output$philosopher<-renderText(input$selnode)
    output$title<-renderText(
      paste(nrow(data()$nodes), "philosophers and",
            nrow(data()$edges), "influences links")
