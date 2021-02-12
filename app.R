@@ -2,6 +2,7 @@ library(shiny)
 library(igraph)
 library(dplyr)
 library(visNetwork)
+library(DT)
 
 # Define server side required to visualise the network
 server <- function(input, output,session) {
@@ -35,6 +36,21 @@ server <- function(input, output,session) {
        visOptions(highlightNearest = list(enabled = T, degree = 1, hover = T))
    })
    
+   metrics <- reactive({
+     data.frame(
+       Philosophers=V(net()) %>% as_ids() %>% gsub("_", " ", .),
+       In=degree(net(), mode = "in"),
+       Out=degree(net(), mode = "out")
+       )
+   })
+   output$table <- DT::renderDataTable(metrics(),
+                                       rownames = FALSE,
+                                       caption = paste(
+                                         "Network metrics at the node (philosopher) level.",
+                                         "The In degree indicates the number of incoming links to the network node,",
+                                         "or the number of influences for the philosopher.",
+                                         "Conversely, the Out degree indicates the number of influencees stemming from the philosopher.")
+   )
    observe({
      updateSelectInput(session, "selnode",
                        choices = data()$nodes$id %>%
@@ -106,6 +122,8 @@ ui <- navbarPage(
                            h4(textOutput("title")),
                            visNetworkOutput("network",height = "500px", width = "auto")
                            ),
+                  tabPanel("Table",
+                           DT::dataTableOutput("table")),
                   tabPanel("Details",
                            h4(tags$em(textOutput("philosopher"))),
                            strong("was influenced by:"), tags$ul(uiOutput("influencers")),
