@@ -97,27 +97,28 @@ server <- function(input, output,session) {
 ui <- navbarPage(
   # Application title
   "In-phi-luence",
-  tabPanel("Networks",
+  tabPanel("Visualise influences",
   # Sidebar with node search enabled
   sidebarLayout(
     sidebarPanel(
       h4("A network view of philosophers"),
       p("Philosophers are here represented as",em("nodes"),"of the network.",
-        "The",em("links"), "between nodes indicates the", strong("influences"),"one philosopher had",
+        "The",em("links"), "between nodes indicates the", strong("influence"),"one philosopher had",
         "on another one. The direction of the link follows knowledge flow."),
       helpText(strong("Example:"),"Aristotle was influenced by Plato"),
       hr(),
       radioButtons("data_src", "Select a source for the influences data",
                    choices = c("The Free Encyclopedia Wikipedia (en)" = "wk",
                                "The Internet Philosophy Ontology Project" = "inpho")),
+      strong(""),
       selectInput(inputId = "selnode",
-                  label = "Find Philosophers in the network",
+                  label = "Explore freely the interactive network or find a philosopher in the list:",
                   choices = "",
                   multiple = FALSE),
     actionButton("show", "Show"),
     actionButton("unselect", "Unselect"),
     br(),
-    helpText("Note: Search for a philosopher and click on Show",
+    helpText("Note: Search for a philosopher and click on `Show`",
              "to highlight its position in the network.")),
     # Show the network
     mainPanel(
@@ -127,14 +128,15 @@ ui <- navbarPage(
                            visNetworkOutput("network",height = "500px", width = "auto")
                            ),
                   tabPanel("Table",
+                           br(),
                            DT::dataTableOutput("table")),
-                  tabPanel("Details",
+                  tabPanel("Influences list",
                            h4(tags$em(textOutput("philosopher"))),
                            strong("was influenced by:"), tags$ul(uiOutput("influencers")),
                            strong("has influenced:"), tags$ul(uiOutput("influencees"))
                   ))
     ))),
-  tabPanel("Details",
+  tabPanel("Materials and methods",
     fluidRow(
       column(4, h4("How?"),
              p("Wikipedia articles were first fetched if they had a Philosopher Infobox",
