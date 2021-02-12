@@ -60,7 +60,7 @@ server <- function(input, output,session) {
    
    observeEvent(input$show,{
      visNetworkProxy("network") %>%
-       visSelectNodes(id = input$selnode)
+       visSelectNodes(id = gsub(" ", "_", input$selnode))
    })
    
    observeEvent(input$unselect,{
