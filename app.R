@@ -25,11 +25,7 @@ server <- function(input, output,session) {
     vis_data
   })
    output$network <- renderVisNetwork({
-     visNetwork(data()$nodes, data()$edges,
-                footer = list(
-                  text="Network generated on 2020-02-14.",
-                  style="font-family:Helvetica,Arial,sans-serif;font-size=8px;text-align:right")
-                ) %>%
+     visNetwork(data()$nodes, data()$edges) %>%
        visNodes(shape = "diamond", color = list(background = "darkgray", border = "white", highlight = "black"), borderWidth = 2) %>%
        visEdges(arrows = list(to = list(enabled = TRUE, scaleFactor = 0.5)), color = "darkgray", width = 2) %>%
        visIgraphLayout() %>%
@@ -137,28 +133,46 @@ ui <- navbarPage(
                   ))
     ))),
   tabPanel("Materials and methods",
-    fluidRow(
-      column(4, h4("How?"),
-             p("Wikipedia articles were first fetched if they had a Philosopher Infobox",
-               "and if they belong to the category of Philosophy of science.",
-               "Mentions of influences in the infobox were mined, collected and gathered into a network."),
-             p("The code to fetch and clean data is available at",
-               a(href="https://github.com/cpauvert/in-phi-luence","https://github.com/cpauvert/in-phi-luence"))),
-    column(4,
-           h4("Why?"),
-           p("This app allows to visualise knowledge flow as a whole.",
-             "It is also a way to promote the content of Wikipedia articles which are accessible",
-             "once hovering on the nodes."),
-           p("Scholars and students in philosophy could explore the network",
-             "and even spot missing links that should be indicated in Wikipedia articles.")),
-    column(4 ,h4("What's next?"),p("New features could include:"),
-           tags$ul(
-             tags$li("Expand the search to all philosophers"),
-             tags$li("Intersect the network with one built from articles in different languages"),
-             tags$li("Restrict the visualisation to philosophers only, not influences like novelists")
-           ),p("Suggestions and remarks are welcomed (en/fr)",
-           a(href="https://github.com/cpauvert/in-phi-luence/issues","here.")))
-  ))
+           fluidPage(
+             fluidRow(
+               h3("Rationale"),
+               p("This app allows to visualise knowledge flow as a whole.",
+                 "It is also a way to promote the content of knowledge sources that are accessible",
+                 "once hovering on the nodes in the network.",
+                 "Scholars and students in philosophy could explore the network",
+                 "and even spot missing links that should be indicated in Wikipedia articles.",
+                 "The original idea stems from my partner wondering whether it was possible to visualise connections",
+                 "between philosophers and their schools of thoughts."),
+               h3("Influences data sources")),
+             fluidRow(
+               column(6, h4("The Free Encyclopedia Wikipedia (en)"),
+                      p(a(href="https://en.wikipedia.org/", "Wikipedia"), "articles were first fetched if they had a Philosopher Infobox",
+                        "and if they belong to the category of Philosophy of science.",
+                        "Mentions of influences in the infobox were mined, collected and gathered into a network.",
+                        "Additional philosophers, novelist and school of thoughts were also added after following",
+                        "the influences linked in the listed Wikipedia pages."),
+                      p("The currently displayed network was generated on 2020-02-14."),
+                      p("Wikipedia articles were gathered with the powerful search tool",
+                        a(href="https://petscan.wmflabs.org/","PetScan"),".",
+                        "R code was then used to fetch and clean data and is available at",
+                        a(href="https://github.com/cpauvert/in-phi-luence","https://github.com/cpauvert/in-phi-luence"))),
+               column(6, h4("The Internet Philosophy Ontology Project (InPho)"),
+                      p("This", a(href="https://www.inphoproject.org/", "amazing scholarly resource"), "compile ontologies",
+                        "on philosophers and which are then made accessible through API or files.",
+                        "Monthly archives of the InPho ontologies were fetched. Automatic mining of the ontologies extracted",
+                        "relevant properties (such as", code("has_influenced"), "or",code("was_influenced") ,
+                        ") and all results were gather into a network."),
+                      p("The currently displayed network was generated on 2020-12-16."),
+                      p("R and Python code were used to fetch and clean data and are availaible at",
+                        a(href="https://github.com/cpauvert/in-phi-luence/inpho","https://github.com/cpauvert/in-phi-luence/inpho"))
+               )),
+             fluidRow(h3("What's next?"),
+                      p("Future avenues include an update of the sources used, a comparison between the two generated networks.",
+                        "The latter could help precise missing influences in Wikipedia articles for instance.",
+                        "Planned milestones are listed",a(href="https://github.com/cpauvert/in-phi-luence/milestones","here"),".",
+                        "Suggestions and remarks are very welcomed (en/fr)",
+                        a(href="https://github.com/cpauvert/in-phi-luence/issues","here."))
+             )))
 )
 
 
