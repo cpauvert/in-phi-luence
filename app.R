@@ -26,8 +26,10 @@ server <- function(input, output,session) {
   })
    output$network <- renderVisNetwork({
      visNetwork(data()$nodes, data()$edges) %>%
+       visPhysics(stabilization = FALSE) %>%
        visNodes(shape = "diamond", color = list(background = "darkgray", border = "white", highlight = "black"), borderWidth = 2) %>%
-       visEdges(arrows = list(to = list(enabled = TRUE, scaleFactor = 0.5)), color = "darkgray", width = 2) %>%
+       visEdges(arrows = list(to = list(enabled = TRUE, scaleFactor = 0.5)),
+                color = "darkgray", width = 2, smooth = FALSE) %>%
        visIgraphLayout() %>%
        visOptions(highlightNearest = list(enabled = T, degree = 1, hover = T))
    })
