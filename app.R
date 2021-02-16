@@ -10,7 +10,7 @@ server <- function(input, output,session) {
     # Data sources dependent input file
     g_src<-switch (input$data_src,
             "wk" = "influences.graphml",
-            "inpho" = "inpho/inpho.graphml")
+            "inpho" = "inpho.graphml")
     # Read the network object
     read_graph(g_src, format = "graphml")
   })
