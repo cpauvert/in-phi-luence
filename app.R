@@ -91,6 +91,11 @@ server <- function(input, output,session) {
      paste(nrow(data()$nodes), "philosophers and",
            nrow(data()$edges), "influences links")
    )
+   output$src<-renderText({
+     switch (input$data_src,
+       "wk" = "The Free Encyclopedia Wikipedia (en)",
+       "inpho" ="The Internet Philosophy Ontology Project")
+   })
 }
 
 # Define UI for the visualisation
@@ -144,9 +149,9 @@ ui <- navbarPage(
                  "or the number of influences for the philosopher.",
                  "Conversely, the `Out` degree indicates the number of influencees stemming from the philosopher."),
                hr(),
-               radioButtons("data_src", "Select a source for the influences data",
-                            choices = c("The Free Encyclopedia Wikipedia (en)" = "wk",
-                                        "The Internet Philosophy Ontology Project" = "inpho"))
+               strong("Source:"), textOutput("src"),
+               br(),
+               helpText("More network metrics should be added in the future.")
            ),
            mainPanel(
              DT::dataTableOutput("table")
