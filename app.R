@@ -31,7 +31,10 @@ server <- function(input, output,session) {
        visEdges(arrows = list(to = list(enabled = TRUE, scaleFactor = 0.5)),
                 color = "darkgray", width = 2, smooth = FALSE) %>%
        visIgraphLayout() %>%
-       visOptions(highlightNearest = list(enabled = T, degree = 1, hover = T))
+       visOptions(highlightNearest = list(enabled = T, degree = 1, hover = T)) %>%
+       visEvents(selectNode = "function(nodes) {
+        Shiny.onInputChange('current_node_id', nodes.nodes);
+        }")
    })
    
    metrics <- reactive({
@@ -53,9 +56,13 @@ server <- function(input, output,session) {
      updateSelectInput(session, "selnode",
                        choices = data()$nodes$id %>%
                          sort() %>%
-                         gsub("_", " ",.))
+                         gsub("_", " ",.),
+                       selected = gsub("_",
+                                       " ",
+                                       input$current_node_id)
+     )
    })
-   
+
    observeEvent(input$show,{
      visNetworkProxy("network") %>%
        visSelectNodes(id = gsub(" ", "_", input$selnode))
