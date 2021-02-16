@@ -45,12 +45,7 @@ server <- function(input, output,session) {
        )
    })
    output$table <- DT::renderDataTable(metrics(),
-                                       rownames = FALSE,
-                                       caption = paste(
-                                         "Network metrics at the node (philosopher) level.",
-                                         "The In degree indicates the number of incoming links to the network node,",
-                                         "or the number of influences for the philosopher.",
-                                         "Conversely, the Out degree indicates the number of influencees stemming from the philosopher.")
+                                       rownames = FALSE
    )
    observe({
      updateSelectInput(session, "selnode",
@@ -102,7 +97,8 @@ server <- function(input, output,session) {
 ui <- navbarPage(
   # Application title
   "In-phi-luence",
-  tabPanel("Visualise influences",
+  navbarMenu("Visualise influences",
+    tabPanel("As a network",
   # Sidebar with node search enabled
   sidebarLayout(
     sidebarPanel(
@@ -132,15 +128,31 @@ ui <- navbarPage(
                            h4(textOutput("title")),
                            visNetworkOutput("network",height = "500px", width = "auto")
                            ),
-                  tabPanel("Table",
-                           br(),
-                           DT::dataTableOutput("table")),
                   tabPanel("Influences list",
                            h4(tags$em(textOutput("philosopher"))),
                            strong("was influenced by:"), tags$ul(uiOutput("influencers")),
                            strong("has influenced:"), tags$ul(uiOutput("influencees"))
-                  ))
+                  )
+      )
     ))),
+  tabPanel("As a table",
+           sidebarLayout(
+             sidebarPanel(
+               h4("A table view of philosophers"),
+               p("From the network of influences, several metrics are computed at the level of the node (philosopher).",
+                 "The `In` degree indicates the number of incoming links to the network node,",
+                 "or the number of influences for the philosopher.",
+                 "Conversely, the `Out` degree indicates the number of influencees stemming from the philosopher."),
+               hr(),
+               radioButtons("data_src", "Select a source for the influences data",
+                            choices = c("The Free Encyclopedia Wikipedia (en)" = "wk",
+                                        "The Internet Philosophy Ontology Project" = "inpho"))
+           ),
+           mainPanel(
+             DT::dataTableOutput("table")
+           )
+           )
+  )),
   tabPanel("Materials and methods",
            fluidPage(
              fluidRow(
