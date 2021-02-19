@@ -18,7 +18,7 @@ Two sources of philosophers influences were used:
 
 Wikipedia articles were first fetched if they had a Philosopher Infobox and if they belong to the category of Philosophy of science.
 Mentions of influences in the infobox were mined, collected and gathered into a network.
-Additional philosophers, novelist and school of thoughts were also added after following the influences linked in the listed Wikipedia pages. The currently displayed network was generated on 2020-02-14.
+Additional philosophers, novelist and school of thoughts were also added even though they do not belong to the category of Philosophy of science. The currently displayed network was generated on 2020-02-14.
 The gathering of Wikipedia articles was made possible with the powerful search tool [PetScan](https://petscan.wmflabs.org).
 
 R code was then used to fetch and clean data and is available at https://github.com/cpauvert/in-phi-luence/in-phi-luence.R
